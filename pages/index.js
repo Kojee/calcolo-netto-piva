@@ -7,17 +7,12 @@ import { useState,useEffect  } from 'react';
 
 
 export default function Home() {
-  const [result , setResult] = useState({
-    taxable: 0,
-    taxableAfterInpsContribution: 0,
-    inpsContribution: 0,
-    irpef: 0,
-    net: 0
-  })
   const [gross, setGross] = useState(0);
   const [expenses, setExpenses] = useState(0);
   const [inpsRate, setInpsRate] = useState(0);
-  useEffect(() => {
+
+  function Calcola() {
+    console.log("edit");
     if(gross > 0
       && inpsRate > 0){
         const taxable = Math.round((gross - expenses)*100)/100;
@@ -50,16 +45,25 @@ export default function Home() {
 
         const irpefContribution = Math.round((over0Contribution + over15Contribution + over28Contribution + over55Contribution + over75Contribution) * 100) / 100;
         const net = Math.round((taxableAfterInpsContribution - irpefContribution)*100)/100;
-        setResult({
+        return ({
           taxable: taxable,
           taxableAfterInpsContribution: taxableAfterInpsContribution,
           inpsContribution: inpsContribution,
           irpef: irpefContribution,
           net: net
         });
+      }else{
+        return {
+          taxable: 0,
+          taxableAfterInpsContribution: 0,
+          inpsContribution: 0,
+          irpef: 0,
+          net: 0
+        }
       }
-  }, [result.net, gross, inpsRate, expenses]);
+  }
 
+  const result = Calcola();
   return (
     <div className={styles.container}>
       <Head>
@@ -83,7 +87,7 @@ export default function Home() {
               margin: '10px'
             }}/>
             <TextField required type="number" id="outlined-basic" label="Aliquota contributi INPS" variant="outlined" 
-            value={inpsRate} onChange={(e) =>  setInpsRate(e.target.value) }
+            value={inpsRate} onChange={(e) => setInpsRate(e.target.value) }
             sx={{
               margin: '10px'
             }}/>
