@@ -12,9 +12,7 @@ export default function Home() {
   const [inpsRate, setInpsRate] = useState(0);
 
   const Calcola = () => {
-    console.log("edit");
-    if(gross > 0
-      && inpsRate > 0){
+    if(gross * inpsRate > 0){
         const taxable = Math.round((gross - expenses)*100)/100;
         const inpsContribution = Math.round((taxable/100*inpsRate)*100)/100;
         const taxableAfterInpsContribution = taxable - inpsContribution;
