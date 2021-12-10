@@ -11,7 +11,7 @@ export default function Home() {
   const [expenses, setExpenses] = useState(0);
   const [inpsRate, setInpsRate] = useState(0);
 
-  function Calcola() {
+  const Calcola = () => {
     console.log("edit");
     if(gross > 0
       && inpsRate > 0){
@@ -20,26 +20,26 @@ export default function Home() {
         const taxableAfterInpsContribution = taxable - inpsContribution;
 
         var over75 = taxableAfterInpsContribution - 75000;
-        over75 = over75 < 0 ? 0 : over75;
+        over75 = Math.max(over75, 0)
         const over75Contribution = over75/100*43;
 
         var over55 = taxableAfterInpsContribution - over75 - 55000;
-        over55 = over55 < 0 ? 0 : over55;
+        over55 = Math.max(over55, 0)
 
         const over55Contribution = over55/100*41;
 
         var over28 = taxableAfterInpsContribution - over55 - over75 - 28000;
-        over28 = over28 < 0 ? 0 : over28;
+        over28 = Math.max(over28, 0)
 
         const over28Contribution = over28/100*38;
 
         var over15 = taxableAfterInpsContribution - over55 - over75 -over28 - 15000;
-        over15 = over15 < 0 ? 0 : over15;
+        over15 = Math.max(over15, 0)
 
         const over15Contribution = over15/100*27;
 
         var over0 = taxableAfterInpsContribution - over55 - over75 -over28 - over15;
-        over0 = over0 < 0 ? 0 : over0;
+        over0 = Math.max(over0, 0)
 
         const over0Contribution = over0/100*23;
 
@@ -63,7 +63,8 @@ export default function Home() {
       }
   }
 
-  const result = Calcola();
+  const result = useMemo(() => {Calcola()},[inpsRate]);
+
   return (
     <div className={styles.container}>
       <Head>
