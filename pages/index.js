@@ -2,7 +2,7 @@ import Head from 'next/head'
 import styles from '../styles/Home.module.css'
 
 import TextField from '@mui/material/TextField';
-import { useState,useEffect  } from 'react';
+import { useMemo, useState,useEffect  } from 'react';
 
 
 
@@ -10,7 +10,13 @@ export default function Home() {
   const [gross, setGross] = useState(0);
   const [expenses, setExpenses] = useState(0);
   const [inpsRate, setInpsRate] = useState(0);
-
+  const [result, setResult] = useState({
+    taxable: 0,
+    taxableAfterInpsContribution: 0,
+    inpsContribution: 0,
+    irpef: 0,
+    net: 0
+  })
   const Calcola = () => {
     if(gross * inpsRate > 0){
         const taxable = Math.round((gross - expenses)*100)/100;
@@ -43,13 +49,13 @@ export default function Home() {
 
         const irpefContribution = Math.round((over0Contribution + over15Contribution + over28Contribution + over55Contribution + over75Contribution) * 100) / 100;
         const net = Math.round((taxableAfterInpsContribution - irpefContribution)*100)/100;
-        return ({
+        return {
           taxable: taxable,
           taxableAfterInpsContribution: taxableAfterInpsContribution,
           inpsContribution: inpsContribution,
           irpef: irpefContribution,
           net: net
-        });
+        };
       }else{
         return {
           taxable: 0,
@@ -61,7 +67,7 @@ export default function Home() {
       }
   }
 
-  const result = useMemo(() => {Calcola()},[inpsRate]);
+  const memResult = useMemo(() => Calcola(),[gross, expenses, inpsRate]);
 
   return (
     <div className={styles.container}>
@@ -95,22 +101,22 @@ export default function Home() {
             <div style={{
               margin: '10px'
             }}>
-              Imponibile: <b>{result.taxable} €</b>
+              Imponibile: <b>{memResult.taxable} €</b>
             </div>
             <div  style={{
               margin: '10px'
             }}>
-              Contributi: <b>{result.inpsContribution} €</b>
+              Contributi: <b>{memResult.inpsContribution} €</b>
             </div>
             <div  style={{
               margin: '10px'
             }}>
-              IRPEF: <b>{result.irpef} €</b>
+              IRPEF: <b>{memResult.irpef} €</b>
             </div>
             <div  style={{
               margin: '10px'
             }}>
-              Netto: <b>{result.net} €</b>
+              Netto: <b>{memResult.net} €</b>
             </div>
           </div>
           <br/>
